@@ -135,3 +135,50 @@ document.addEventListener('mousemove', (e) => {
         floatingPanel.style.transform = 'translateX(-100%)';
     }
 });
+
+//history平铺
+// ==UserScript==
+(function () {
+  let interval;
+
+//show more! show more! until show all!
+  function clickButton() {
+    const btn = document.querySelector('.btn.relative.btn-dark.btn-small.m-auto.mb-2');
+    if (btn) {
+      btn.click();
+    } else {
+      clearInterval(interval);
+      flattenChildren();
+    }
+  }
+//
+  function flattenChildren() {
+    const container = document.querySelector('.flex.flex-col.gap-2.text-gray-100.text-sm');
+    if (container) {
+      const overlay = document.createElement('div');
+      overlay.style.position = 'fixed';
+      overlay.style.top = '0';
+      overlay.style.left = '0';
+      overlay.style.width = '100%';
+      overlay.style.height = '100%';
+      overlay.style.overflow = 'auto';
+      overlay.style.zIndex = '9999';
+      overlay.style.backgroundColor = 'rgba(255, 255, 255, 0.8)';
+      overlay.style.display = 'flex';
+      overlay.style.flexWrap = 'wrap';
+      overlay.style.alignItems = 'center';
+      overlay.style.justifyContent = 'center';
+
+      const children = Array.from(container.children);
+      container.innerHTML = '';
+      children.forEach(child => {
+        child.classList.remove('flex', 'flex-col', 'gap-2', 'text-gray-100', 'text-sm');
+        overlay.appendChild(child);
+      });
+
+      document.body.appendChild(overlay);
+    }
+  }
+
+  interval = setInterval(clickButton, 1500);
+})();
